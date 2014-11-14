@@ -50,6 +50,10 @@ class RePatchaXBlock(XBlock):
         frag = Fragment(html.format(self=self))
         frag.add_javascript(self.resource_string("static/js/lib/annotator/annotator-full.min.js"))
         frag.add_css(self.resource_string("static/js/lib/annotator/annotator.min.css"))
+        
+        frag.add_javascript(self.resource_string("static/js/lib/google-code-prettify/src/prettify.js"))
+        frag.add_css(self.resource_string("static/js/lib/google-code-prettify/src/prettify.css"))
+        
         frag.add_css(self.resource_string("static/css/repatcha.css"))
         frag.add_javascript(self.resource_string("static/js/src/repatcha.js"))
         frag.initialize_js('RePatchaXBlock')
