@@ -3,6 +3,8 @@ function RePatchaXBlock(runtime, element) {
 
 
   /*capturing html element where 3d model will be drawn*/
-  var base =$('#cv',element).get(0);
+  var base =$('.repatcha_block',element).get(0);
+  $('.repatcha_block')
+	.annotator('setupPlugins');
 
 }
