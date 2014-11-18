@@ -16,12 +16,9 @@ class RePatchaXBlock(XBlock):
 
     display_name = String(display_name="Display name", default="repatcha", scope=Scope.settings , help="Name of component in edxplatform")
     title = String(default="Title", scope=Scope.content, help="Enter Title")
-    model3d =  String(default="http://edxstatic.extensionengine.com/slider/3d/buckyball/BuckyBall_molecular_structure.obj", scope=Scope.content, help="Enter a adress of model")
-    background1 = String(default="#ffffff", scope=Scope.content, help="Enter a first half of background")
-    background2 = String(default="#383840", scope=Scope.content, help="Enter a second half of background")
-    pict_name = String(default="",scope=Scope.content, help="Enter image name")
-    height = Integer(default=400 ,scope=Scope.content, help="Height of model viewer")
-    width  = Integer(default=750 ,scope=Scope.content, help="Width of model viewer")
+    git_owner = String(default="edx", scope=Scope.content, help="git owner")
+    git_repo = String(default="edx-platform", scope=Scope.content, help="git repo")
+    git_pr_number = Integer(default=123 ,scope=Scope.content, help="git pr number")
 
 
     def resource_string(self, path):
@@ -39,12 +36,10 @@ class RePatchaXBlock(XBlock):
         template_str = self.resource_string("static/html/repatcha.html")
         template = Template(template_str)
         html = template.render(Context({
-            'lres':self.model3d,
+            'git_owner':self.git_owner,
             'lword':self.title,
-            'bg1':self.background1,
-            'bg2':self.background2,
-            'height':self.height,
-            'width':self.width
+            'git_repo':self.git_repo,
+            'git_pr_number':self.git_pr_number
             }))
 
         frag = Fragment(html.format(self=self))
@@ -72,7 +67,7 @@ class RePatchaXBlock(XBlock):
 
         html_ed_str=self.resource_string("static/html/repatcha_edit.html")
         word = self.title or ''
-        frag = Fragment(html_ed_str.format(ltitle=self.title,loc=self.model3d,bg1=self.background1,bg2=self.background2,width=self.width,height=self.height))
+        frag = Fragment(html_ed_str.format(ltitle=self.title,git_owner=self.git_owner,git_repo=self.git_repo,git_pr_number=self.git_pr_number))
         frag.add_javascript(self.resource_string("static/js/src/repatcha_edit.js"))
         frag.initialize_js('RePatchaXBlockEdit')
         return frag
@@ -83,11 +78,9 @@ class RePatchaXBlock(XBlock):
         Called when submitting the form in Studio.
         """
         self.title = data.get('word')
-        self.model3d =  data.get('location')
-        self.background1 = data.get('backgnd')
-        self.background2 = data .get('backgnd1')
-        self.height = data.get('height')
-        self.width = data.get('width')
+        self.git_owner =  data.get('git_owner')
+        self.git_repo = data.get('git_repo')
+        self.git_pr_number = data .get('git_pr_number')
 
         return {'result':'success'}
 
