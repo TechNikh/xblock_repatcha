@@ -18,25 +18,25 @@ function RePatchaXBlock(runtime, element) {
 					autoStart : true,
 					modal:true
 			  });
-			  jQuery('select').on('change', function() {
+			  $('select').on('change', function() {
 					//console.log(jQuery(this));
-					var hint_num = jQuery(this).attr('class');
-					var correct_hint_val = jQuery('#correct-hint-'+hint_num).val();
+					var hint_num = $(this).attr('class');
+					var correct_hint_val = $('#correct-hint-'+hint_num).val();
 					//console.log(correct_hint_val);
 					if(this.value == correct_hint_val){
 						//alert("Correct");
-						jQuery("span#hint-status-"+hint_num).html("&#x2713;");
-						jQuery("span#hint-status-"+hint_num).css('color', 'green');
+						$("span#hint-status-"+hint_num).html("&#x2713;");
+						$("span#hint-status-"+hint_num).css('color', 'green');
 					}else{
-						jQuery("span#hint-status-"+hint_num).html("&#x2717;");
-						jQuery("span#hint-status-"+hint_num).css('color', 'red');
+						$("span#hint-status-"+hint_num).html("&#x2717;");
+						$("span#hint-status-"+hint_num).css('color', 'red');
 					}
 					  //alert( this.value ); // or $(this).val()
 				});
-				jQuery("input[value='Show Answer in detail']").click(function(e) {
-					var hint_num = jQuery(this).attr('class');
-					jQuery("span#step-answer-"+hint_num).show();
-					jQuery(this).hide();
+				$("input[value='Show Answer in detail']").click(function(e) {
+					var hint_num = $(this).attr('class');
+					$("span#step-answer-"+hint_num).show();
+					$(this).hide();
 				});
 		  });
 		  $('.prettyprint', element).html(diff_html);
