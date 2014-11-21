@@ -6,9 +6,24 @@ function RePatchaXBlock(runtime, element) {
 	      var git_repo = $(".test").data("git-repo");
 	      var git_pr_number = $(".test").data("git-pr-number");
 	      var reference_uri = "https://github.com/"+git_owner+"/"+git_repo+"/pull/"+git_pr_number;
+	      //http://www.repatcha.org/annotation/api/search?uri=https://github.com/LeaVerou/dabblet/pull/148
+	      var repatcha_uri = "http://www.repatcha.org/annotation/api/search?uri="+reference_uri;
 	      var store_prefix = "http://repatcha.org/annotation/api";
   
 		  var diff_html = "diff --git a/tests/behat/behat.yml b/tests/behat/behat.yml";
+		  $.getJSON( repatcha_uri, function( data ) {
+			  console.log(data);
+			  var items = [];
+			  $.each( data, function( key, val ) {
+			    items.push( "<li id='" + key + "'>" + val + "</li>" );
+			  });
+			  console.log(items);
+		  });
+		  var joyride_html = '<ol id="joyRideTipContent">';
+		  joyride_html += '<li data-class="prettyprint"><p>test</p></li>';
+		  joyride_html += '</ol>';
+		  diff_html += joyride_html;
+		  
 		  $("#joyride-go-btn").click(function(e) {
 				$("#joyRideTipContent").joyride({
 			      /* Options will go here */
