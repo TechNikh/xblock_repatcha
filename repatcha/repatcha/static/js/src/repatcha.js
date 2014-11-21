@@ -132,7 +132,7 @@ function RePatchaXBlock(runtime, element) {
 				return Geolocation;
 
 			})(Annotator.Plugin);
-		  $('.prettyprint', element)
+/*		  $('.prettyprint', element)
 			.annotator('setupPlugins')
 			.annotator("addPlugin", "Geolocation")
 			.annotator("addPlugin", "Tags")
@@ -154,7 +154,7 @@ function RePatchaXBlock(runtime, element) {
 		        'uri': reference_uri
 		      }
 		    });
-		  //prettyPrint();
+*/		  //prettyPrint();
 		  $.getJSON( repatcha_uri, function( data ) {
               console.log(data);
               var joyride_html = '<ol id="joyRideTipContent">';
@@ -175,6 +175,29 @@ function RePatchaXBlock(runtime, element) {
               joyride_html += '</ol>';
               old_html = $('.prettyprint', element).html();
               $('.prettyprint', element).html(old_html + joyride_html);
-          });
+$('.prettyprint', element)
+                        .annotator('setupPlugins')
+                        .annotator("addPlugin", "Geolocation")
+                        .annotator("addPlugin", "Tags")
+                        .annotator("addPlugin", "CustomHighlighter")
+                        .annotator('addPlugin', 'Store', {
+                      // The endpoint of the store on your server.
+                      prefix: store_prefix,
+
+                      // Attach the uri of the current page to all annotations to allow search.
+                      annotationData: {
+                        'uri': reference_uri
+                      },
+
+                      // This will perform a "search" action when the plugin loads. Will
+                      // request the last 20 annotations for the current url.
+                      // eg. /store/endpoint/search?limit=20&uri=http://this/document/only
+                      loadFromSearch: {
+                        'limit': 20,
+                        'uri': reference_uri
+                      }
+                    });
+      
+    });
 
 }
