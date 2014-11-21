@@ -14,9 +14,19 @@ function RePatchaXBlock(runtime, element) {
 		  var joyride_html = '<ol id="joyRideTipContent">';
 		  $.getJSON( repatcha_uri, function( data ) {
 			  console.log(data);
-			  $.each( data, function( key, val ) {
+			  hint_dropdown_html = 'Select appropriate reason for this change. <select class=""><option value="">- Please select -</option>';
+			  $.each( data.rows, function( key, val ) {
+			    hint_dropdown_html += '<option value="'+val.hint+'">'+val.hint+'</option>';
+			  });
+			  hint_dropdown_html += '</select><span class="hint-status" id=""></span>';
+			  $.each( data.rows, function( key, val ) {
 				  var rid = val.id;
-				  joyride_html += '<li data-class="annotator-hl-'+rid+'"><p>'+val.text+'</p></li>';
+				  var step_hint = val.hint;
+				  var step_answer = val.text;
+				  var step_answer_html = '<span class="" id="step-answer-'+rid+'" style="display:none">'+step_answer+'</span><input type="button" value="Show Answer in detail" class="'+rid+'" />';
+				  hint_dropdown_html_new = hint_dropdown_html.replace('<select class="">', '<select class="'+rid+'">');
+				  hint_dropdown_html_new = hint_dropdown_html_new.replace('<span class="hint-status" id="">', '<span class="hint-status" id="hint-status-'+rid+'">')+"<br/>";
+				  joyride_html += '<li data-class="annotator-hl-'+rid+'"><p>'+hint_dropdown_html_new+step_answer_html+'<input type="hidden" value="'+step_hint+'" id="correct-hint-'+rid+'"></p></li>';
 			  });
 		  });
 		  joyride_html += '</ol>';
