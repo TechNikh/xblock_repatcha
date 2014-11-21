@@ -11,16 +11,14 @@ function RePatchaXBlock(runtime, element) {
 	      var store_prefix = "http://repatcha.org/annotation/api";
   
 		  var diff_html = "diff --git a/tests/behat/behat.yml b/tests/behat/behat.yml";
+		  var joyride_html = '<ol id="joyRideTipContent">';
 		  $.getJSON( repatcha_uri, function( data ) {
 			  console.log(data);
-			  var items = [];
 			  $.each( data, function( key, val ) {
-			    items.push( "<li id='" + key + "'>" + val + "</li>" );
+				  var rid = val.id;
+				  joyride_html += '<li data-class="annotator-hl-'+rid+'"><p>'+val.text+'</p></li>';
 			  });
-			  console.log(items);
 		  });
-		  var joyride_html = '<ol id="joyRideTipContent">';
-		  joyride_html += '<li data-class="prettyprint"><p>test</p></li>';
 		  joyride_html += '</ol>';
 		  diff_html += joyride_html;
 		  
@@ -32,6 +30,30 @@ function RePatchaXBlock(runtime, element) {
 			    });
 		  });
 		  $('.prettyprint', element).html(diff_html);
+		  Annotator.Plugin.CustomHighlighter = function(element) {
+			    var myPlugin = {};
+			    myPlugin.pluginInit = function() {
+			        myPlugin.annotator.subscribe("annotationsLoaded", function(arrayOfAnnotations) {
+			            //console.log("annotations loaded");
+			            //console.log(arrayOfAnnotations);
+			            $.each(arrayOfAnnotations, function(i) {
+			                //console.log("processing annotation #" + i);
+			                var annotation = arrayOfAnnotations[i];
+			                //console.log(annotation);
+			                $.each(annotation.highlights, function(j) {
+			                    //console.log("\tprocessing highlight #" +j);
+			                    var highlight = annotation.highlights[j];
+			                    $(highlight).addClass('annotator-hl-'+annotation.id);
+			                });
+			            });
+			        });
+			        myPlugin.annotator.subscribe("annotationCreated", function(annotation) {
+			            //console.log(annotation);
+			        });
+			    };
+			    return myPlugin;
+			};
+			
 		  Annotator.Plugin.Geolocation = (function(_super) {
 				__extends(Geolocation, _super);
 
@@ -103,6 +125,8 @@ function RePatchaXBlock(runtime, element) {
 		  $('.prettyprint', element)
 			.annotator('setupPlugins')
 			.annotator("addPlugin", "Geolocation")
+			.annotator("addPlugin", "Tags")
+			.annotator("addPlugin", "CustomHighlighter")
 			.annotator('addPlugin', 'Store', {
 		      // The endpoint of the store on your server.
 		      prefix: store_prefix,
