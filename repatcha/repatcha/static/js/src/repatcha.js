@@ -12,13 +12,32 @@ function RePatchaXBlock(runtime, element) {
   
 		  var diff_html = "diff --git a/tests/behat/behat.yml b/tests/behat/behat.yml";
 		  
-		  $("#joyride-go-btn").click(function(e) {
-console.log("btn click");				
-$("#joyRideTipContent").joyride({
-/* Options will go here */
+		  $("#joyride-go-btn").click(function(e) {			
+			  $("#joyRideTipContent").joyride({
+				  /* Options will go here */
 					autoStart : true,
 					modal:true
-			    });
+			  });
+			  jQuery('select').on('change', function() {
+					//console.log(jQuery(this));
+					var hint_num = jQuery(this).attr('class');
+					var correct_hint_val = jQuery('#correct-hint-'+hint_num).val();
+					//console.log(correct_hint_val);
+					if(this.value == correct_hint_val){
+						//alert("Correct");
+						jQuery("span#hint-status-"+hint_num).html("&#x2713;");
+						jQuery("span#hint-status-"+hint_num).css('color', 'green');
+					}else{
+						jQuery("span#hint-status-"+hint_num).html("&#x2717;");
+						jQuery("span#hint-status-"+hint_num).css('color', 'red');
+					}
+					  //alert( this.value ); // or $(this).val()
+				});
+				jQuery("input[value='Show Answer in detail']").click(function(e) {
+					var hint_num = jQuery(this).attr('class');
+					jQuery("span#step-answer-"+hint_num).show();
+					jQuery(this).hide();
+				});
 		  });
 		  $('.prettyprint', element).html(diff_html);
 		  Annotator.Plugin.CustomHighlighter = function(element) {
@@ -136,27 +155,26 @@ $("#joyRideTipContent").joyride({
 		      }
 		    });
 		  //prettyPrint();
-$.getJSON( repatcha_uri, function( data ) {
-                          console.log(data);
-var joyride_html = '<ol id="joyRideTipContent">';
-                          hint_dropdown_html = 'Select appropriate reason for this change. <select class=""><option value="">- Please select -</option>';
-                          $.each( data.rows, function( key, val ) {
-                            hint_dropdown_html += '<option value="'+val.hint+'">'+val.hint+'</option>';
-                          });
-                          hint_dropdown_html += '</select><span class="hint-status" id=""></span>';
-                          $.each( data.rows, function( key, val ) {
-                                  var rid = val.id;
-                                  var step_hint = val.hint;
-                                  var step_answer = val.text;
-                                  var step_answer_html = '<span class="" id="step-answer-'+rid+'" style="display:none">'+step_answer+'</span><input type="button" value="Show Answer in detail" class="'+rid+'" />';
-                                  hint_dropdown_html_new = hint_dropdown_html.replace('<select class="">', '<select class="'+rid+'">');
-                                  hint_dropdown_html_new = hint_dropdown_html_new.replace('<span class="hint-status" id="">', '<span class="hint-status" id="hint-status-'+rid+'">')+"<br/>";
-                                  joyride_html += '<li data-class="annotator-hl-'+rid+'"><p>'+hint_dropdown_html_new+step_answer_html+'<input type="hidden" value="'+step_hint+'" id="correct-hint-'+rid+'"></p></li>';
-                          });
-joyride_html += '</ol>';
-old_html = $('.prettyprint', element).html();
-console.log("old: "+old_html);
-$('.prettyprint', element).html(old_html + joyride_html);
-                  });
+		  $.getJSON( repatcha_uri, function( data ) {
+              console.log(data);
+              var joyride_html = '<ol id="joyRideTipContent">';
+              hint_dropdown_html = '<span style="color: white;">Select appropriate reason for this change.</span> <select class=""><option value="">- Please select -</option>';
+              $.each( data.rows, function( key, val ) {
+                hint_dropdown_html += '<option value="'+val.hint+'">'+val.hint+'</option>';
+              });
+              hint_dropdown_html += '</select><span class="hint-status" id=""></span>';
+              $.each( data.rows, function( key, val ) {
+                      var rid = val.id;
+                      var step_hint = val.hint;
+                      var step_answer = val.text;
+                      var step_answer_html = '<span class="" id="step-answer-'+rid+'" style="display:none">'+step_answer+'</span><input type="button" value="Show Answer in detail" class="'+rid+'" />';
+                      hint_dropdown_html_new = hint_dropdown_html.replace('<select class="">', '<select class="'+rid+'">');
+                      hint_dropdown_html_new = hint_dropdown_html_new.replace('<span class="hint-status" id="">', '<span class="hint-status" id="hint-status-'+rid+'">')+"<br/>";
+                      joyride_html += '<li data-class="annotator-hl-'+rid+'"><p>'+hint_dropdown_html_new+step_answer_html+'<input type="hidden" value="'+step_hint+'" id="correct-hint-'+rid+'"></p></li>';
+              });
+              joyride_html += '</ol>';
+              old_html = $('.prettyprint', element).html();
+              $('.prettyprint', element).html(old_html + joyride_html);
+          });
 
 }
