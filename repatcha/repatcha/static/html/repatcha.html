@@ -14,14 +14,14 @@ index 50d7631..0bcf351 100644
  }
  
  h1, h2 {
-@@ -46,6 +48,7 @@ body > hgroup {
+@@ -46,6 +48,7 @@ body &gt; hgroup {
  	text-align: center;
  	font-size: 400%;
  	line-height: .4;
 +	-webkit-transform: translateZ(0); /* fix for chopped letters */
  }
  
- 	body > hgroup > h1 {
+ 	body &gt; hgroup &gt; h1 {
 @@ -113,6 +116,7 @@ nav {
  	position: fixed;
  	top: 13em;
@@ -34,7 +34,7 @@ index 50d7631..0bcf351 100644
  	color: hsla(200,10%,20%,.4);
  }
  
-+	nav > ol {
++	nav &gt; ol {
 +		list-style-position: inside;
 +	}
 +	
