@@ -6,11 +6,10 @@ function RePatchaXBlock(runtime, element) {
 	      var git_repo = $(".test").data("git-repo");
 	      var git_pr_number = $(".test").data("git-pr-number");
 	      var reference_uri = "https://github.com/"+git_owner+"/"+git_repo+"/pull/"+git_pr_number;
+	      var git_api_uri = "https://api.github.com/repos/"+git_owner+"/"+git_repo+"/pull/"+git_pr_number;
 	      //http://www.repatcha.org/annotation/api/search?uri=https://github.com/LeaVerou/dabblet/pull/148
 	      var repatcha_uri = "http://www.repatcha.org/annotation/api/search?uri="+reference_uri;
 	      var store_prefix = "http://repatcha.org/annotation/api";
-  
-		  var diff_html = "diff --git a/tests/behat/behat.yml b/tests/behat/behat.yml";
 		  
 		  $("#joyride-go-btn").click(function(e) {			
 			  $("#joyRideTipContent").joyride({
@@ -39,7 +38,7 @@ function RePatchaXBlock(runtime, element) {
 					$(this).hide();
 				});
 		  });
-		  //$('.prettyprint', element).html(diff_html);
+
 		  Annotator.Plugin.CustomHighlighter = function(element) {
 			    var myPlugin = {};
 			    myPlugin.pluginInit = function() {
@@ -132,72 +131,53 @@ function RePatchaXBlock(runtime, element) {
 				return Geolocation;
 
 			})(Annotator.Plugin);
-/*		  $('.prettyprint', element)
-			.annotator('setupPlugins')
-			.annotator("addPlugin", "Geolocation")
-			.annotator("addPlugin", "Tags")
-			.annotator("addPlugin", "CustomHighlighter")
-			.annotator('addPlugin', 'Store', {
-		      // The endpoint of the store on your server.
-		      prefix: store_prefix,
-		
-		      // Attach the uri of the current page to all annotations to allow search.
-		      annotationData: {
-		        'uri': reference_uri
-		      },
-		
-		      // This will perform a "search" action when the plugin loads. Will
-		      // request the last 20 annotations for the current url.
-		      // eg. /store/endpoint/search?limit=20&uri=http://this/document/only
-		      loadFromSearch: {
-		        'limit': 20,
-		        'uri': reference_uri
-		      }
-		    });
-*/		  //prettyPrint();
-		  $.getJSON( repatcha_uri, function( data ) {
-              console.log(data);
-              var joyride_html = '<ol id="joyRideTipContent">';
-              hint_dropdown_html = '<span style="color: white;">Select appropriate reason for this change.</span> <select class=""><option value="">- Please select -</option>';
-              $.each( data.rows, function( key, val ) {
-                hint_dropdown_html += '<option value="'+val.hint+'">'+val.hint+'</option>';
-              });
-              hint_dropdown_html += '</select><span class="hint-status" id=""></span>';
-              $.each( data.rows, function( key, val ) {
-                      var rid = val.id;
-                      var step_hint = val.hint;
-                      var step_answer = val.text;
-                      var step_answer_html = '<span class="" id="step-answer-'+rid+'" style="display:none">'+step_answer+'</span><input type="button" value="Show Answer in detail" class="'+rid+'" />';
-                      hint_dropdown_html_new = hint_dropdown_html.replace('<select class="">', '<select class="'+rid+'">');
-                      hint_dropdown_html_new = hint_dropdown_html_new.replace('<span class="hint-status" id="">', '<span class="hint-status" id="hint-status-'+rid+'">')+"<br/>";
-                      joyride_html += '<li data-class="annotator-hl-'+rid+'"><p>'+hint_dropdown_html_new+step_answer_html+'<input type="hidden" value="'+step_hint+'" id="correct-hint-'+rid+'"></p></li>';
-              });
-              joyride_html += '</ol>';
-              old_html = $('.prettyprint', element).html();
-              $('.prettyprint', element).html(old_html + joyride_html);
-$('.prettyprint', element)
-                        .annotator('setupPlugins')
-                        .annotator("addPlugin", "Geolocation")
-                        .annotator("addPlugin", "Tags")
-                        .annotator("addPlugin", "CustomHighlighter")
-                        .annotator('addPlugin', 'Store', {
-                      // The endpoint of the store on your server.
-                      prefix: store_prefix,
+		  //prettyPrint();
+	      $.get( git_api_uri, function( diff_html ) {
+	    	  $('.prettyprint', element).html(diff_html);
 
-                      // Attach the uri of the current page to all annotations to allow search.
-                      annotationData: {
-                        'uri': reference_uri
-                      },
-
-                      // This will perform a "search" action when the plugin loads. Will
-                      // request the last 20 annotations for the current url.
-                      // eg. /store/endpoint/search?limit=20&uri=http://this/document/only
-                      loadFromSearch: {
-                        'limit': 20,
-                        'uri': reference_uri
-                      }
-                    });
-      
-    });
-
+			  $.getJSON( repatcha_uri, function( data ) {
+	              console.log(data);
+	              var joyride_html = '<ol id="joyRideTipContent">';
+	              hint_dropdown_html = '<span style="color: white;">Select appropriate reason for this change.</span> <select class=""><option value="">- Please select -</option>';
+	              $.each( data.rows, function( key, val ) {
+	                hint_dropdown_html += '<option value="'+val.hint+'">'+val.hint+'</option>';
+	              });
+	              hint_dropdown_html += '</select><span class="hint-status" id=""></span>';
+	              $.each( data.rows, function( key, val ) {
+	                      var rid = val.id;
+	                      var step_hint = val.hint;
+	                      var step_answer = val.text;
+	                      var step_answer_html = '<span class="" id="step-answer-'+rid+'" style="display:none">'+step_answer+'</span><input type="button" value="Show Answer in detail" class="'+rid+'" />';
+	                      hint_dropdown_html_new = hint_dropdown_html.replace('<select class="">', '<select class="'+rid+'">');
+	                      hint_dropdown_html_new = hint_dropdown_html_new.replace('<span class="hint-status" id="">', '<span class="hint-status" id="hint-status-'+rid+'">')+"<br/>";
+	                      joyride_html += '<li data-class="annotator-hl-'+rid+'"><p>'+hint_dropdown_html_new+step_answer_html+'<input type="hidden" value="'+step_hint+'" id="correct-hint-'+rid+'"></p></li>';
+	              });
+	              joyride_html += '</ol>';
+	              old_html = $('.prettyprint', element).html();
+	              $('.prettyprint', element).html(old_html + joyride_html);
+	              $('.prettyprint', element)
+	                        .annotator('setupPlugins')
+	                        .annotator("addPlugin", "Geolocation")
+	                        .annotator("addPlugin", "Tags")
+	                        .annotator("addPlugin", "CustomHighlighter")
+	                        .annotator('addPlugin', 'Store', {
+	                      // The endpoint of the store on your server.
+	                      prefix: store_prefix,
+	
+	                      // Attach the uri of the current page to all annotations to allow search.
+	                      annotationData: {
+	                        'uri': reference_uri
+	                      },
+	
+	                      // This will perform a "search" action when the plugin loads. Will
+	                      // request the last 20 annotations for the current url.
+	                      // eg. /store/endpoint/search?limit=20&uri=http://this/document/only
+	                      loadFromSearch: {
+	                        'limit': 20,
+	                        'uri': reference_uri
+	                      }
+	             });
+	      
+	      });
+	});
 }
