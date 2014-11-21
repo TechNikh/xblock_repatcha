@@ -1,7 +1,48 @@
 <div class="repatcha_block">
 Take a look at the code and see if you understand how it will work. Click Go to check the changes. <input type="button" value="Go" id="joyride-go-btn" />
 <pre class="prettyprint linenums">
-Testing
+diff --git a/help/style.css b/help/style.css
+index 50d7631..0bcf351 100644
+--- a/help/style.css
++++ b/help/style.css
+@@ -34,6 +34,8 @@ body {
+ 	font: 110%/1.5 Primary;
+ 	hyphens: auto;
+ 	text-shadow: 0 0.0847em white; /* See issue #134 */
++	text-rendering: optimizelegibility;
++	-webkit-font-smoothing: subpixel-antialiased; /* fix any issues caused by translateZ fix */
+ }
+ 
+ h1, h2 {
+@@ -46,6 +48,7 @@ body > hgroup {
+ 	text-align: center;
+ 	font-size: 400%;
+ 	line-height: .4;
++	-webkit-transform: translateZ(0); /* fix for chopped letters */
+ }
+ 
+ 	body > hgroup > h1 {
+@@ -113,6 +116,7 @@ nav {
+ 	position: fixed;
+ 	top: 13em;
+ 	width: 12em;
++	padding-right: 1em;
+ 	margin-left: -14em;
+ 	text-align: right;
+ }
+@@ -121,7 +125,12 @@ nav:not(:hover) {
+ 	color: hsla(200,10%,20%,.4);
+ }
+ 
++	nav > ol {
++		list-style-position: inside;
++	}
++	
+ 	nav a {
++		padding: .25em 0;
+ 		text-decoration: none;
+ 		color: inherit;
+ 	}
 </pre>
 <div class="test" data-git-owner="{{git_owner}}" data-git-repo="{{git_repo}}" data-git-pr-number="{{git_pr_number}}" >
 		</div>

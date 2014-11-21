@@ -39,7 +39,7 @@ function RePatchaXBlock(runtime, element) {
 					$(this).hide();
 				});
 		  });
-		  $('.prettyprint', element).html(diff_html);
+		  //$('.prettyprint', element).html(diff_html);
 		  Annotator.Plugin.CustomHighlighter = function(element) {
 			    var myPlugin = {};
 			    myPlugin.pluginInit = function() {
